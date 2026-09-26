@@ -1,0 +1,26 @@
+# Variáveis e segredos locais
+.env
+*.env.local
+pix.key
+!pix.key.example
+k8s/03-secret.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+venv/
+.venv/
+
+# Editores e sistema
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Kubernetes
+*.kubeconfig
+
+# Logs locais
+*.log
