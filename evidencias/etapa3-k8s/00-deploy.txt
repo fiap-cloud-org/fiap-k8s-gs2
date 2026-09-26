@@ -1,0 +1,77 @@
+========================================
+Deploy Kubernetes - UniFIAP Pay SPB
+========================================
+
+Verificando conexão com cluster Kubernetes...
+✓ Conectado ao cluster
+
+Aplicando manifests Kubernetes...
+
+namespace/unifiapay created
+✓ Namespace criado
+configmap/unifiapay-config created
+✓ ConfigMap criado
+secret/unifiapay-secrets created
+✓ Secret criado a partir do docker/pix.key
+serviceaccount/unifiapay-sa created
+✓ ServiceAccount criado
+role.rbac.authorization.k8s.io/unifiapay-role created
+✓ Role criado
+rolebinding.rbac.authorization.k8s.io/unifiapay-rolebinding created
+✓ RoleBinding criado
+persistentvolumeclaim/unifiapay-logs-pvc created
+✓ PVC criado
+deployment.apps/api-pagamentos created
+✓ Deployment API criado
+deployment.apps/auditoria-service created
+✓ Deployment Auditoria criado
+service/api-pagamentos-service created
+service/api-pagamentos-nodeport created
+✓ Services criados
+cronjob.batch/cronjob-fechamento-reserva created
+✓ CronJob criado
+
+========================================
+✓ Deploy concluído!
+========================================
+
+Aguardando pods ficarem prontos...
+Waiting for deployment "api-pagamentos" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "api-pagamentos" rollout to finish: 1 of 2 updated replicas are available...
+deployment "api-pagamentos" successfully rolled out
+deployment "auditoria-service" successfully rolled out
+persistentvolumeclaim/unifiapay-logs-pvc condition met
+✓ Pods prontos e PVC do livro-razão Bound
+
+Status dos recursos:
+
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/api-pagamentos-9666f79dc-l2tkt      1/1     Running   0          20s
+pod/api-pagamentos-9666f79dc-s8rjk      1/1     Running   0          20s
+pod/auditoria-service-969d6846b-ndjww   1/1     Running   0          20s
+
+NAME                              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/api-pagamentos-nodeport   NodePort    10.96.95.21    <none>        8080:30080/TCP   20s
+service/api-pagamentos-service    ClusterIP   10.96.49.252   <none>        8080/TCP         20s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/api-pagamentos      2/2     2            2           20s
+deployment.apps/auditoria-service   1/1     1            1           20s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/api-pagamentos-9666f79dc      2         2         2       20s
+replicaset.apps/auditoria-service-969d6846b   1         1         1       20s
+
+NAME                                       SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/cronjob-fechamento-reserva   0 */6 * * *   <none>     False     0        <none>          19s
+
+Comandos úteis:
+  Ver pods:        kubectl get pods -n unifiapay
+  Ver logs API:    kubectl logs -l app=api-pagamentos -n unifiapay --tail=50
+  Ver logs Audit:  kubectl logs -l app=auditoria-service -n unifiapay --tail=50
+  Escalar API:     kubectl scale deployment api-pagamentos --replicas=3 -n unifiapay
+  Ver CronJobs:    kubectl get cronjob -n unifiapay
+  Testar API (via port-forward): kubectl -n unifiapay port-forward svc/api-pagamentos-service 30080:8080 & then curl http://localhost:30080/health
+
+Para acessar a API externamente:
+  Para acesso rápido com kind: kubectl -n unifiapay port-forward svc/api-pagamentos-service 30080:8080 &

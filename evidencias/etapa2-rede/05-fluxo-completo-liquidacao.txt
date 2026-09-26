@@ -1,0 +1,70 @@
+========================================
+Teste Fluxo Completo SPB
+========================================
+
+[1/7] Consultando saldo inicial...
+Saldo Inicial: R$ 1000000.0
+
+[2/7] Enviando PIX #1 (R$ 250,00)...
+{
+  "mensagem": "Pagamento registrado e aguardando liquidação",
+  "status": "AGUARDANDO_LIQUIDACAO",
+  "sucesso": true,
+  "transacao_id": "PIX-20260926132846191768",
+  "valor": 250.0
+}
+✓ Transação criada: PIX-20260926132846191768
+
+[3/7] Verificando saldo (antes da liquidação)...
+Saldo Atual: R$ 1000000.0 (deve ser igual ao inicial)
+
+[4/7] Executando processo de liquidação...
+2026-09-26 13:28:46 - auditoria-service - INFO - === Iniciando Serviço de Auditoria e Liquidação ===
+2026-09-26 13:28:46 - file-monitor - INFO - Monitor inicializado. Arquivo: /var/logs/api/instrucoes.log, Posição: 768
+2026-09-26 13:28:46 - liquidacao-service - INFO - Serviço de Liquidação inicializado
+2026-09-26 13:28:46 - liquidacao-service - INFO - Monitorando: /var/logs/api/instrucoes.log
+2026-09-26 13:28:46 - auditoria-service - INFO - Modo execução única (CronJob)
+2026-09-26 13:28:46 - liquidacao-service - INFO - Total de instruções no livro-razão: 3
+2026-09-26 13:28:46 - liquidacao-service - INFO - Transação liquidada: PIX-20260926132845377699 - Valor: R$ 150.5 - Destino: cliente.a@exemplo.com
+2026-09-26 13:28:46 - liquidacao-service - INFO - Transação liquidada: PIX-20260926132845417769 - Valor: R$ 250.0 - Destino: cliente.b@exemplo.com
+2026-09-26 13:28:46 - liquidacao-service - INFO - Transação liquidada: PIX-20260926132846191768 - Valor: R$ 250.0 - Destino: cliente.a@exemplo.com
+2026-09-26 13:28:46 - liquidacao-service - INFO - Atualizando arquivo com 3 transações...
+2026-09-26 13:28:46 - liquidacao-service - INFO - Arquivo de instruções atualizado: 3 transações
+2026-09-26 13:28:46 - liquidacao-service - INFO - ✓ Arquivo atualizado com sucesso!
+2026-09-26 13:28:46 - auditoria-service - INFO - Liquidações processadas: 3
+2026-09-26 13:28:46 - auditoria-service - INFO - Erros encontrados: 0
+2026-09-26 13:28:46 - auditoria-service - INFO - Transações liquidadas:
+2026-09-26 13:28:46 - auditoria-service - INFO -   - PIX-20260926132845377699
+2026-09-26 13:28:46 - auditoria-service - INFO -   - PIX-20260926132845417769
+2026-09-26 13:28:46 - auditoria-service - INFO -   - PIX-20260926132846191768
+2026-09-26 13:28:46 - auditoria-service - INFO - === Serviço de Auditoria Finalizado ===
+
+[5/7] Verificando saldo (após liquidação)...
+Saldo Atualizado: R$ 999349.5
+
+[6/7] Enviando PIX #2 (R$ 150,00)...
+{
+  "mensagem": "Pagamento registrado e aguardando liquidação",
+  "status": "AGUARDANDO_LIQUIDACAO",
+  "sucesso": true,
+  "transacao_id": "PIX-20260926132846974479",
+  "valor": 150.0
+}
+
+[7/7] Verificando livro-razão (instrucoes.log)...
+{"transacao_id": "PIX-20260926132845377699", "timestamp": "2026-09-26T13:28:45.377748", "valor": 150.5, "chave_destino": "cliente.a@exemplo.com", "descricao": "Pagamento mensalidade FIAP", "status": "LIQUIDADO", "banco_originador": "UNIFIAP_PAY", "timestamp_liquidacao": "2026-09-26T13:28:46.904802", "sistema_liquidacao": "STR_BACEN_SIMULADO"}
+{"transacao_id": "PIX-20260926132845417769", "timestamp": "2026-09-26T13:28:45.417814", "valor": 250.0, "chave_destino": "cliente.b@exemplo.com", "descricao": "Transfer\u00eancia entre contas", "status": "LIQUIDADO", "banco_originador": "UNIFIAP_PAY", "timestamp_liquidacao": "2026-09-26T13:28:46.905310", "sistema_liquidacao": "STR_BACEN_SIMULADO"}
+{"transacao_id": "PIX-20260926132846191768", "timestamp": "2026-09-26T13:28:46.191809", "valor": 250.0, "chave_destino": "cliente.a@exemplo.com", "descricao": "Primeiro PIX", "status": "LIQUIDADO", "banco_originador": "UNIFIAP_PAY", "timestamp_liquidacao": "2026-09-26T13:28:46.905619", "sistema_liquidacao": "STR_BACEN_SIMULADO"}
+{"transacao_id": "PIX-20260926132846974479", "timestamp": "2026-09-26T13:28:46.974524", "valor": 150.0, "chave_destino": "cliente.b@exemplo.com", "descricao": "Segundo PIX", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+
+========================================
+✓ Teste Completo Finalizado!
+========================================
+
+Resumo:
+  • Saldo Inicial:     R$ 1000000.0
+  • Saldo Antes Liq.:  R$ 1000000.0
+  • Saldo Após Liq.:   R$ 999349.5
+  • Diferença:         R$ 650.5
+
+✓ SUCESSO: Saldo foi atualizado corretamente!

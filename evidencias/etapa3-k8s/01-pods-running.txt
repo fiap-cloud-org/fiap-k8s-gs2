@@ -1,0 +1,4 @@
+NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE                       NOMINATED NODE   READINESS GATES
+api-pagamentos-9666f79dc-l2tkt      1/1     Running   0          20s   10.244.0.23   fiapk8sgs2-control-plane   <none>           <none>
+api-pagamentos-9666f79dc-s8rjk      1/1     Running   0          20s   10.244.0.24   fiapk8sgs2-control-plane   <none>           <none>
+auditoria-service-969d6846b-ndjww   1/1     Running   0          20s   10.244.0.22   fiapk8sgs2-control-plane   <none>           <none>

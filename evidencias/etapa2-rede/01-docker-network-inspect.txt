@@ -1,0 +1,61 @@
+[
+    {
+        "Name": "unifiap_net",
+        "Id": "c04f939a8f466a74a44bf0fa6738c6b6c51b594f04c847692bf2d1335ddd0b31",
+        "Created": "2026-09-26T13:28:25.885953529Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.25.0.0/24",
+                    "Gateway": "172.25.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Options": {},
+        "Labels": {
+            "com.docker.compose.config-hash": "3be2382a6b2a355c2ad2a9ac24c9280d7ac015e6a252689d853c45f7668a42c3",
+            "com.docker.compose.network": "unifiap_net",
+            "com.docker.compose.project": "docker",
+            "com.docker.compose.version": "5.5.1"
+        },
+        "Containers": {
+            "23d46b612c9131a9696c98026744707515695c33103ca27b6c43732c4bd2a822": {
+                "Name": "auditoria-service",
+                "EndpointID": "8c3f59e384bfde74b0bdcd4f88b46d52708a75b3d73d12b62269fed3e8d4725e",
+                "MacAddress": "56:44:35:35:e4:3c",
+                "IPv4Address": "172.25.0.20/24",
+                "IPv6Address": ""
+            },
+            "91f193040c6b29e904b0183e9b2552c1a9e4ad0ed812032b44ffc57317c85b33": {
+                "Name": "api-pagamentos",
+                "EndpointID": "1a283b81be237c28141712fabe084469342d5226337015fc9ab02398fbeac437",
+                "MacAddress": "9a:ec:27:cb:90:40",
+                "IPv4Address": "172.25.0.10/24",
+                "IPv6Address": ""
+            }
+        },
+        "Status": {
+            "IPAM": {
+                "Subnets": {
+                    "172.25.0.0/24": {
+                        "IPsInUse": 5,
+                        "DynamicIPsAvailable": 251
+                    }
+                }
+            }
+        }
+    }
+]

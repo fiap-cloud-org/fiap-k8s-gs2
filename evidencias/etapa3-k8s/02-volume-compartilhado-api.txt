@@ -1,0 +1,8 @@
+--- api-pagamentos-9666f79dc-l2tkt
+{"transacao_id": "PIX-20260926133328394754", "timestamp": "2026-09-26T13:33:28.394801", "valor": 120.5, "chave_destino": "cliente@exemplo.com", "descricao": "teste k8s", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+{"transacao_id": "PIX-20260926133328416490", "timestamp": "2026-09-26T13:33:28.416523", "valor": 300.0, "chave_destino": "cliente@exemplo.com", "descricao": "teste k8s", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+{"transacao_id": "PIX-20260926133328437999", "timestamp": "2026-09-26T13:33:28.438100", "valor": 79.5, "chave_destino": "cliente@exemplo.com", "descricao": "teste k8s", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+--- api-pagamentos-9666f79dc-s8rjk
+{"transacao_id": "PIX-20260926133328394754", "timestamp": "2026-09-26T13:33:28.394801", "valor": 120.5, "chave_destino": "cliente@exemplo.com", "descricao": "teste k8s", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+{"transacao_id": "PIX-20260926133328416490", "timestamp": "2026-09-26T13:33:28.416523", "valor": 300.0, "chave_destino": "cliente@exemplo.com", "descricao": "teste k8s", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+{"transacao_id": "PIX-20260926133328437999", "timestamp": "2026-09-26T13:33:28.438100", "valor": 79.5, "chave_destino": "cliente@exemplo.com", "descricao": "teste k8s", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}

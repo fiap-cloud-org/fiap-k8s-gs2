@@ -20,6 +20,9 @@ EV=evidencias/etapa3-k8s
 salvar() { if [ "${EVIDENCIAS:-0}" = 1 ]; then tee "$EV/$1"; else cat; fi; }
 falha() { echo "FALHOU: $*" >&2; exit 1; }
 
+echo "== Pods"
+kubectl -n "$NS" get pods -o wide | salvar 01-pods-running.txt
+
 # A auditoria contínua liquidaria sozinha a cada 5 min: pausa durante o teste
 kubectl -n "$NS" scale deployment auditoria-service --replicas=0 >/dev/null
 kubectl -n "$NS" wait --for=delete pod -l app=auditoria-service --timeout=60s >/dev/null 2>&1 || true
@@ -28,9 +31,6 @@ kubectl -n "$NS" port-forward svc/api-pagamentos-service "${PORTA}:8080" >/dev/n
 PF=$!
 trap 'kill $PF 2>/dev/null || true' EXIT
 for _ in $(seq 1 30); do curl -fs "$API/health" >/dev/null 2>&1 && break; sleep 1; done
-
-echo "== Pods"
-kubectl -n "$NS" get pods -o wide | salvar 01-pods-running.txt
 
 echo "== Reserva antes"
 ANTES=$(curl -fs "$API/api/v1/reserva")

@@ -1,0 +1,2 @@
+{"reserva_disponivel":1000000.0,"service":"api-pagamentos","status":"healthy"}
+

@@ -1,0 +1,78 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.06kB done
+
+#2 [internal] load metadata for docker.io/library/python:3.11-slim
+
+#3 [internal] load .dockerignore
+#3 transferring context: 125B done
+
+#4 [internal] load build context
+#4 transferring context: 313B done
+
+#5 [builder 2/4] WORKDIR /build
+#5 CACHED
+
+#6 [builder 1/4] FROM docker.io/library/python:3.11-slim@sha256:e41613d42d4891e4930f79523f93f81bbc7632584ec65e36ab055f41a800b41e
+#6 CACHED
+
+#7 [builder 3/4] COPY requirements.txt .
+
+#8 [stage-1 2/5] RUN useradd -m -u 1000 appuser &&     mkdir -p /var/logs/api &&     chown -R appuser:appuser /var/logs/api
+
+#9 [builder 4/4] RUN pip install --no-cache-dir --user -r requirements.txt
+#9 ...
+
+#10 [stage-1 3/5] WORKDIR /app
+
+#9 [builder 4/4] RUN pip install --no-cache-dir --user -r requirements.txt
+#9 2.780 Collecting flask==3.1.3 (from -r requirements.txt (line 1))
+#9 2.868   Downloading flask-3.1.3-py3-none-any.whl.metadata (3.2 kB)
+#9 2.911 Collecting blinker>=1.9.0 (from flask==3.1.3->-r requirements.txt (line 1))
+#9 2.932   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+#9 2.990 Collecting click>=8.1.3 (from flask==3.1.3->-r requirements.txt (line 1))
+#9 3.014   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#9 3.054 Collecting itsdangerous>=2.2.0 (from flask==3.1.3->-r requirements.txt (line 1))
+#9 3.077   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+#9 3.128 Collecting jinja2>=3.1.2 (from flask==3.1.3->-r requirements.txt (line 1))
+#9 3.149   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#9 3.292 Collecting markupsafe>=2.1.1 (from flask==3.1.3->-r requirements.txt (line 1))
+#9 3.314   Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#9 3.390 Collecting werkzeug>=3.1.0 (from flask==3.1.3->-r requirements.txt (line 1))
+#9 3.412   Downloading werkzeug-3.1.8-py3-none-any.whl.metadata (4.0 kB)
+#9 3.450 Downloading flask-3.1.3-py3-none-any.whl (103 kB)
+#9 3.478    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 103.4/103.4 kB 4.5 MB/s eta 0:00:00
+#9 3.499 Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+#9 3.521 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#9 3.535    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.3/125.3 kB 14.2 MB/s eta 0:00:00
+#9 3.553 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+#9 3.581 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+#9 3.598    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 10.3 MB/s eta 0:00:00
+#9 3.613 Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#9 3.627 Downloading werkzeug-3.1.8-py3-none-any.whl (226 kB)
+#9 3.656    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 226.5/226.5 kB 10.4 MB/s eta 0:00:00
+#9 3.732 Installing collected packages: markupsafe, itsdangerous, click, blinker, werkzeug, jinja2, flask
+#9 4.252   WARNING: The script flask is installed in '/root/.local/bin' which is not on PATH.
+#9 4.252   Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+#9 4.297 Successfully installed blinker-1.9.0 click-8.5.0 flask-3.1.3 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.3 werkzeug-3.1.8
+#9 4.298 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#9 4.482 
+#9 4.482 [notice] A new release of pip is available: 24.0 -> 26.2.1
+#9 4.482 [notice] To update, run: pip install --upgrade pip
+
+#11 [stage-1 4/5] COPY --from=builder /root/.local /home/appuser/.local
+
+#12 [stage-1 5/5] COPY --chown=appuser:appuser . .
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 0.5s done
+#13 exporting manifest sha256:bb29fec72df145997ad5fe9c8c531fa47e22567078626b9303bba402279f2b04 0.0s done
+#13 exporting config sha256:0985c80e4e9483848497d602f3949f17b2bd487af9f2a308686df279c036a073 0.0s done
+#13 exporting attestation manifest sha256:31a11270f25b99c924b16b72016c84b99fec8ad51f1537a7a3ec16ea41c58580 0.0s done
+#13 exporting manifest list sha256:75e829feb6dbb3bacae659146c9ead2452daab5a4265d53cdf3ead07f2f1395b
+#13 exporting manifest list sha256:75e829feb6dbb3bacae659146c9ead2452daab5a4265d53cdf3ead07f2f1395b 0.0s done
+#13 naming to docker.io/library/api-pagamentos:v1.556336 done
+#13 unpacking to docker.io/library/api-pagamentos:v1.556336
+#13 unpacking to docker.io/library/api-pagamentos:v1.556336 0.3s done

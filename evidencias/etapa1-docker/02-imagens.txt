@@ -1,0 +1,3 @@
+REPOSITORY:TAG                                                SIZE
+api-pagamentos:v1.556336                                      195MB
+auditoria-service:v1.556336                                   187MB
