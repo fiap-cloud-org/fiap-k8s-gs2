@@ -16,6 +16,7 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Deploy Kubernetes - UniFIAP Pay SPB${NC}"
+cd "$(dirname "$0")/.."
 echo -e "${GREEN}========================================${NC}"
 echo ""
 
@@ -46,8 +47,8 @@ echo -e "${GREEN}✓ Namespace criado${NC}"
 kubectl apply -f k8s/02-configmap.yaml
 echo -e "${GREEN}✓ ConfigMap criado${NC}"
 
-kubectl apply -f k8s/03-secret.yaml
-echo -e "${GREEN}✓ Secret criado${NC}"
+./scripts/criar-secret.sh
+echo -e "${GREEN}✓ Secret criado a partir do docker/pix.key${NC}"
 
 kubectl apply -f k8s/09-rbac-serviceaccount.yaml
 echo -e "${GREEN}✓ ServiceAccount criado${NC}"
