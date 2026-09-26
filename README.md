@@ -3,6 +3,10 @@
 </h1>
 
 <p align="center">
+  <img src="docs/demo.webp" alt="Terminal no cluster kind: pods da API e da auditoria, um PIX aprovado e outro recusado por reserva, o Job de liquidação baixando o saldo e o Pod inseguro recusado pelo Pod Security" />
+</p>
+
+<p align="center">
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=python,flask,docker,kubernetes,bash,githubactions" alt="Stacks" />
   </a>
