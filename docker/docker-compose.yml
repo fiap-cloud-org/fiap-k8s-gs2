@@ -45,8 +45,13 @@ services:
     networks:
       unifiap_net:
         ipv4_address: 172.25.0.20
+    environment:
+      # No compose a auditoria fica em loop; no Kubernetes o CronJob roda em modo "once"
+      EXECUTION_MODE: continuous
+      MONITORING_INTERVAL: ${MONITORING_INTERVAL:-60}
     volumes:
       - shared_logs:/var/logs/api
     restart: unless-stopped
     depends_on:
-      - api-pagamentos
+      api-pagamentos:
+        condition: service_healthy
