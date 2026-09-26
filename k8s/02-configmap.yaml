@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: unifiapay-config
+  namespace: unifiapay
+  labels:
+    app: unifiapay
+data:
+  # Configuração do Sistema de Pagamentos (SPB)
+  RESERVA_BANCARIA_SALDO: "1000000.00"
+  
+  # Configurações da API
+  API_PORT: "8080"
+  API_HOST: "0.0.0.0"
+  
+  # Configurações de Log
+  LOG_LEVEL: "INFO"
+  LOG_PATH: "/var/logs/api"
+  
+  # Configurações do Serviço de Auditoria
+  EXECUTION_MODE: "once"
+  MONITORING_INTERVAL: "300"

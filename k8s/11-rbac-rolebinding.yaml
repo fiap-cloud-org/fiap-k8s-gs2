@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: unifiapay-rolebinding
+  namespace: unifiapay
+  labels:
+    app: unifiapay
+subjects:
+- kind: ServiceAccount
+  name: unifiapay-sa
+  namespace: unifiapay
+roleRef:
+  kind: Role
+  name: unifiapay-role
+  apiGroup: rbac.authorization.k8s.io

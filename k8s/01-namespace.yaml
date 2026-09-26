@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: unifiapay
+  labels:
+    name: unifiapay
+    project: unifiapay-spb
+    environment: production

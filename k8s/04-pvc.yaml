@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: unifiapay-logs-pvc
+  namespace: unifiapay
+  labels:
+    app: unifiapay
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  # Para kind, usar storageClassName: standard
+  # Para outros ambientes, ajustar conforme necessário
+  storageClassName: standard
