@@ -1,0 +1,93 @@
+========================================
+Simulação de Transações PIX
+Sistema UniFIAP Pay SPB
+========================================
+
+[1/6] Health Check...
+{
+  "reserva_disponivel": 1000000.0,
+  "service": "api-pagamentos",
+  "status": "healthy"
+}
+✓ API está saudável
+
+[2/6] Consultando Reserva Bancária...
+{
+  "moeda": "BRL",
+  "reserva_bancaria_saldo": 1000000.0,
+  "reserva_comprometida": 0.0,
+  "reserva_disponivel_para_pix": 1000000.0
+}
+Saldo disponível: R$ 1000000.0
+
+[3/6] Enviando PIX válido (R$ 150,50)...
+{
+  "mensagem": "Pagamento registrado e aguardando liquidação",
+  "status": "AGUARDANDO_LIQUIDACAO",
+  "sucesso": true,
+  "transacao_id": "PIX-20260926132845377699",
+  "valor": 150.5
+}
+✓ PIX aprovado e registrado
+
+[4/6] Enviando PIX válido (R$ 250,00)...
+{
+  "mensagem": "Pagamento registrado e aguardando liquidação",
+  "status": "AGUARDANDO_LIQUIDACAO",
+  "sucesso": true,
+  "transacao_id": "PIX-20260926132845417769",
+  "valor": 250.0
+}
+✓ PIX aprovado e registrado
+
+[5/6] Enviando PIX inválido (valor > reserva)...
+{
+  "mensagem": "Reserva bancária insuficiente",
+  "reserva_disponivel": 999599.5,
+  "status": "REJEITADO",
+  "sucesso": false,
+  "valor_solicitado": 99999999.99
+}
+✓ PIX rejeitado corretamente (saldo insuficiente)
+
+[6/6] Verificando Livro-Razão (instrucoes.log)...
+
+=== Arquivo no container api-pagamentos ===
+{"transacao_id": "PIX-20260926132845377699", "timestamp": "2026-09-26T13:28:45.377748", "valor": 150.5, "chave_destino": "cliente.a@exemplo.com", "descricao": "Pagamento mensalidade FIAP", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+{"transacao_id": "PIX-20260926132845417769", "timestamp": "2026-09-26T13:28:45.417814", "valor": 250.0, "chave_destino": "cliente.b@exemplo.com", "descricao": "Transfer\u00eancia entre contas", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+
+=== Arquivo no container auditoria-service (mesmo volume) ===
+{"transacao_id": "PIX-20260926132845377699", "timestamp": "2026-09-26T13:28:45.377748", "valor": 150.5, "chave_destino": "cliente.a@exemplo.com", "descricao": "Pagamento mensalidade FIAP", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+{"transacao_id": "PIX-20260926132845417769", "timestamp": "2026-09-26T13:28:45.417814", "valor": 250.0, "chave_destino": "cliente.b@exemplo.com", "descricao": "Transfer\u00eancia entre contas", "status": "AGUARDANDO_LIQUIDACAO", "banco_originador": "UNIFIAP_PAY"}
+
+Total de transações registradas: 2
+
+Logs recentes da API:
+api-pagamentos  | 2026-09-26 13:28:45 - reserva-service - INFO - Saldo calculado: R$ 1000000.00 (Inicial: R$ 1000000.00, Liquidado: R$ 0.00)
+api-pagamentos  | 172.25.0.1 - - [26/Sep/2026 13:28:45] "GET /health HTTP/1.1" 200 -
+api-pagamentos  | 172.25.0.1 - - [26/Sep/2026 13:28:45] "GET /api/v1/reserva HTTP/1.1" 200 -
+api-pagamentos  | 2026-09-26 13:28:45 - reserva-service - INFO - Saldo calculado: R$ 1000000.00 (Inicial: R$ 1000000.00, Liquidado: R$ 0.00)
+api-pagamentos  | 172.25.0.1 - - [26/Sep/2026 13:28:45] "GET /health HTTP/1.1" 200 -
+api-pagamentos  | 172.25.0.1 - - [26/Sep/2026 13:28:45] "GET /api/v1/reserva HTTP/1.1" 200 -
+api-pagamentos  | 2026-09-26 13:28:45 - reserva-service - INFO - Instrução de pagamento registrada: PIX-20260926132845377699
+api-pagamentos  | 2026-09-26 13:28:45 - api-pagamentos - INFO - PIX processado: PIX-20260926132845377699 - Valor: R$ 150.5
+api-pagamentos  | 172.25.0.1 - - [26/Sep/2026 13:28:45] "POST /api/v1/pix HTTP/1.1" 201 -
+api-pagamentos  | 2026-09-26 13:28:45 - reserva-service - INFO - Instrução de pagamento registrada: PIX-20260926132845417769
+api-pagamentos  | 2026-09-26 13:28:45 - api-pagamentos - INFO - PIX processado: PIX-20260926132845417769 - Valor: R$ 250.0
+api-pagamentos  | 172.25.0.1 - - [26/Sep/2026 13:28:45] "POST /api/v1/pix HTTP/1.1" 201 -
+api-pagamentos  | 2026-09-26 13:28:45 - reserva-service - WARNING - Reserva insuficiente. Solicitado: R$ 99999999.99, Disponível: R$ 999599.5
+api-pagamentos  | 2026-09-26 13:28:45 - api-pagamentos - WARNING - PIX rejeitado: Reserva bancária insuficiente
+api-pagamentos  | 172.25.0.1 - - [26/Sep/2026 13:28:45] "POST /api/v1/pix HTTP/1.1" 400 -
+
+========================================
+✓ Simulação concluída!
+========================================
+
+Resumo:
+  • Health Check: OK
+  • Reserva Bancária: R$ 1000000.0
+  • PIX válidos enviados: 2
+  • PIX rejeitados: 1
+  • Volume compartilhado: Funcionando
+
+Próximo passo: Execute o serviço de auditoria para liquidar as transações
