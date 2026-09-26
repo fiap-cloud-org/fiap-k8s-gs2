@@ -36,7 +36,7 @@ EXPOSE 8080
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD python -c "import requests; requests.get('http://localhost:8080/health')" || exit 1
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=3)" || exit 1
 
 # Comando de inicialização
 CMD ["python", "app.py"]
