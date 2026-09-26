@@ -11,6 +11,8 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  # Para kind, usar storageClassName: standard
-  # Para outros ambientes, ajustar conforme necessário
+  # "standard" é a StorageClass padrão do kind (local-path).
+  # ReadWriteOnce basta porque o kind tem um nó só: todos os Pods que montam
+  # o livro-razão rodam no mesmo nó. Em um cluster com vários nós, use uma
+  # StorageClass com ReadWriteMany (NFS, EFS, Azure Files...).
   storageClassName: standard
