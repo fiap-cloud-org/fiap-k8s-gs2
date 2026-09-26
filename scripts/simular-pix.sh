@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-API_URL="http://localhost:8080"
+API_URL="${API_URL:-http://localhost:8080}"
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Simulação de Transações PIX${NC}"
@@ -37,7 +37,7 @@ echo ""
 echo -e "${BLUE}[2/6] Consultando Reserva Bancária...${NC}"
 RESERVA=$(curl -s ${API_URL}/api/v1/reserva)
 echo "$RESERVA" | jq .
-SALDO=$(echo "$RESERVA" | jq -r '.reserva_bancaria')
+SALDO=$(echo "$RESERVA" | jq -r '.reserva_bancaria_saldo')
 echo -e "${YELLOW}Saldo disponível: R\$ ${SALDO}${NC}"
 echo ""
 
