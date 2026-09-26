@@ -48,18 +48,25 @@ echo "  Auditoria:      $AUD_IP (esperado: 172.25.0.20)"
 echo ""
 
 echo -e "${BLUE}[5/8] Salvando evidência 1 - Inspeção da rede...${NC}"
-docker network inspect docker_unifiap_net > "$EVIDENCIAS_DIR/01-docker-network-inspect.txt"
+docker network inspect unifiap_net > "$EVIDENCIAS_DIR/01-docker-network-inspect.txt"
 echo -e "${GREEN}✓ Salvo: 01-docker-network-inspect.txt${NC}"
 echo ""
 
-echo -e "${BLUE}[6/8] Testando PING: api-pagamentos → auditoria-service...${NC}"
-docker exec api-pagamentos ping -c 4 172.25.0.20 | tee "$EVIDENCIAS_DIR/02-ping-api-to-auditoria.txt"
-echo -e "${GREEN}✓ Salvo: 02-ping-api-to-auditoria.txt${NC}"
+# As imagens python:slim não têm ping nem curl: os testes usam o próprio Python
+echo -e "${BLUE}[6/8] Testando HTTP: auditoria-service → api-pagamentos ($API_IP:8080)...${NC}"
+docker exec auditoria-service python -c "import urllib.request; print(urllib.request.urlopen('http://$API_IP:8080/health', timeout=5).read().decode())" \
+  | tee "$EVIDENCIAS_DIR/02-http-auditoria-to-api.txt"
+echo -e "${GREEN}✓ Salvo: 02-http-auditoria-to-api.txt${NC}"
 echo ""
 
-echo -e "${BLUE}[7/8] Testando PING: auditoria-service → api-pagamentos...${NC}"
-docker exec auditoria-service ping -c 4 172.25.0.10 | tee "$EVIDENCIAS_DIR/02-ping-auditoria-to-api.txt"
-echo -e "${GREEN}✓ Salvo: 02-ping-auditoria-to-api.txt${NC}"
+echo -e "${BLUE}[7/8] Testando conexão TCP: api-pagamentos → auditoria-service ($AUD_IP)...${NC}"
+docker exec api-pagamentos python -c "
+import socket
+s = socket.socket(); s.settimeout(3)
+r = s.connect_ex(('$AUD_IP', 9))
+print('host $AUD_IP alcançável na rede unifiap_net' if r in (0, 111) else f'sem rota até $AUD_IP (erro {r})')
+" | tee "$EVIDENCIAS_DIR/02-tcp-api-to-auditoria.txt"
+echo -e "${GREEN}✓ Salvo: 02-tcp-api-to-auditoria.txt${NC}"
 echo ""
 
 echo -e "${BLUE}[8/8] Salvando logs da API (variáveis de ambiente)...${NC}"
@@ -77,11 +84,11 @@ echo ""
 
 echo -e "${YELLOW}Testando API externamente:${NC}"
 echo -e "${BLUE}Health Check:${NC}"
-curl -s http://localhost:8080/health | jq . || echo "API não respondeu ou jq não instalado"
+curl -s "${API_URL:-http://localhost:8080}/health" | jq . || echo "API não respondeu ou jq não instalado"
 echo ""
 
 echo -e "${BLUE}Reserva Bancária:${NC}"
-curl -s http://localhost:8080/api/v1/reserva | jq . || echo "API não respondeu ou jq não instalado"
+curl -s "${API_URL:-http://localhost:8080}/api/v1/reserva" | jq . || echo "API não respondeu ou jq não instalado"
 echo ""
 
 echo -e "${GREEN}✓ Etapa 2 - Rede, Comunicação e Segmentação completa!${NC}"
