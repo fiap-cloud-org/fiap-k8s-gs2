@@ -45,7 +45,7 @@ echo ""
 # 4. Executar liquidação
 echo -e "${BLUE}[4/7] Executando processo de liquidação...${NC}"
 cd "$(dirname "$0")/../docker"
-docker compose run --rm auditoria-service python app.py
+docker compose run --rm -e EXECUTION_MODE=once auditoria-service python app.py
 echo ""
 
 # 5. Verificar saldo após liquidação
@@ -76,7 +76,7 @@ echo -e "${YELLOW}Resumo:${NC}"
 echo "  • Saldo Inicial:     R\$ ${SALDO_INICIAL}"
 echo "  • Saldo Antes Liq.:  R\$ ${SALDO_ANTES}"
 echo "  • Saldo Após Liq.:   R\$ ${SALDO_DEPOIS}"
-echo "  • Diferença:         R\$ $(echo "$SALDO_INICIAL - $SALDO_DEPOIS" | bc)"
+echo "  • Diferença:         R\$ $(awk "BEGIN {print $SALDO_INICIAL - $SALDO_DEPOIS}")"
 echo ""
 
 if [ "$SALDO_DEPOIS" != "$SALDO_INICIAL" ]; then

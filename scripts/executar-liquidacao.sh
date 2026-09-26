@@ -32,7 +32,7 @@ echo -e "${GREEN}✓ Container parado${NC}"
 echo ""
 
 echo -e "${BLUE}[3/4] Executando processo de liquidação...${NC}"
-docker compose run --rm auditoria-service python app.py
+docker compose run --rm -e EXECUTION_MODE=once auditoria-service python app.py
 echo ""
 
 echo -e "${BLUE}[4/4] Verificando transações após liquidação...${NC}"
@@ -46,4 +46,4 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 
 echo -e "${YELLOW}Verificando saldo da reserva após liquidação:${NC}"
-curl -s http://localhost:8080/api/v1/reserva | jq .
+curl -s "${API_URL:-http://localhost:8080}/api/v1/reserva" | jq .
