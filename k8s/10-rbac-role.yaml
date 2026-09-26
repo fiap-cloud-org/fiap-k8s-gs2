@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: unifiapay-role
+  namespace: unifiapay
+  labels:
+    app: unifiapay
+rules:
+# Permissões restritas apenas para recursos necessários
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]
+
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]
+
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+
+- apiGroups: [""]
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "list"]

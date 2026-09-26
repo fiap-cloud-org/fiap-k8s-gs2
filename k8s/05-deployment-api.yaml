@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-pagamentos
+  namespace: unifiapay
+  labels:
+    app: api-pagamentos
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-pagamentos
+  template:
+    metadata:
+      labels:
+        app: api-pagamentos
+        tier: backend
+    spec:
+      serviceAccountName: unifiapay-sa
+      
+      # Configurações de segurança do Pod
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      
+      containers:
+      - name: api-pagamentos
+        image: api-pagamentos:v1.556336
+        imagePullPolicy: IfNotPresent
+        
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        
+        # Variáveis de ambiente do ConfigMap
+        envFrom:
+        - configMapRef:
+            name: unifiapay-config
+        
+        # Volume para logs compartilhados (Livro-Razão)
+        volumeMounts:
+        - name: shared-logs
+          mountPath: /var/logs/api
+        - name: pix-key
+          mountPath: /app/pix.key
+          subPath: pix.key
+          readOnly: true
+        
+        # Recursos (Limits e Requests)
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        
+        # Configurações de segurança do Container
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+            - ALL
+      
+      volumes:
+      - name: shared-logs
+        hostPath:
+          path: /tmp/unifiapay-logs
+          type: DirectoryOrCreate
+      - name: pix-key
+        secret:
+          secretName: unifiapay-secrets
+          items:
+          - key: pix.key
+            path: pix.key
