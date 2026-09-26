@@ -1,7 +1,7 @@
-version: '3.8'
-
 networks:
   unifiap_net:
+    # Nome fixo: "docker network inspect unifiap_net" funciona de qualquer pasta
+    name: unifiap_net
     driver: bridge
     ipam:
       config:
