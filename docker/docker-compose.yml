@@ -1,7 +1,7 @@
-version: '3.8'
-
 networks:
   unifiap_net:
+    # Nome fixo: "docker network inspect unifiap_net" funciona de qualquer pasta
+    name: unifiap_net
     driver: bridge
     ipam:
       config:
@@ -30,10 +30,12 @@ services:
       - "8080:8080"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
+      # A imagem python:slim não tem curl: o teste usa o próprio Python
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
       retries: 3
+      start_period: 5s
 
   auditoria-service:
     build:
@@ -43,8 +45,13 @@ services:
     networks:
       unifiap_net:
         ipv4_address: 172.25.0.20
+    environment:
+      # No compose a auditoria fica em loop; no Kubernetes o CronJob roda em modo "once"
+      EXECUTION_MODE: continuous
+      MONITORING_INTERVAL: ${MONITORING_INTERVAL:-60}
     volumes:
       - shared_logs:/var/logs/api
     restart: unless-stopped
     depends_on:
-      - api-pagamentos
+      api-pagamentos:
+        condition: service_healthy
