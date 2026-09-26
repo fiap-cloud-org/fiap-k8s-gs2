@@ -91,9 +91,8 @@ spec:
       
       volumes:
       - name: shared-logs
-        hostPath:
-          path: /tmp/unifiapay-logs
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: unifiapay-logs-pvc
       - name: pix-key
         secret:
           secretName: unifiapay-secrets
