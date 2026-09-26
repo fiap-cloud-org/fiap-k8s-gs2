@@ -21,21 +21,16 @@ echo ""
 
 cd "$(dirname "$0")/../docker"
 
-echo -e "${BLUE}[1/4] Verificando transações pendentes...${NC}"
+echo -e "${BLUE}[1/3] Verificando transações pendentes...${NC}"
 echo ""
 docker exec api-pagamentos cat /var/logs/api/instrucoes.log 2>/dev/null | grep "AGUARDANDO_LIQUIDACAO" || echo "Nenhuma transação pendente"
 echo ""
 
-echo -e "${BLUE}[2/4] Parando container auditoria-service...${NC}"
-docker compose stop auditoria-service 2>/dev/null || true
-echo -e "${GREEN}✓ Container parado${NC}"
+echo -e "${BLUE}[2/3] Executando processo de liquidação (no container da auditoria)...${NC}"
+docker compose exec -T -e EXECUTION_MODE=once auditoria-service python app.py
 echo ""
 
-echo -e "${BLUE}[3/4] Executando processo de liquidação...${NC}"
-docker compose run --rm -e EXECUTION_MODE=once auditoria-service python app.py
-echo ""
-
-echo -e "${BLUE}[4/4] Verificando transações após liquidação...${NC}"
+echo -e "${BLUE}[3/3] Verificando transações após liquidação...${NC}"
 echo ""
 docker exec api-pagamentos cat /var/logs/api/instrucoes.log 2>/dev/null || echo "Erro ao ler arquivo"
 echo ""

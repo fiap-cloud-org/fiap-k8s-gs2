@@ -45,7 +45,7 @@ echo ""
 # 4. Executar liquidação
 echo -e "${BLUE}[4/7] Executando processo de liquidação...${NC}"
 cd "$(dirname "$0")/../docker"
-docker compose run --rm -e EXECUTION_MODE=once auditoria-service python app.py
+docker compose exec -T -e EXECUTION_MODE=once auditoria-service python app.py
 echo ""
 
 # 5. Verificar saldo após liquidação
