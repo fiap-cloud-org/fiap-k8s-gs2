@@ -30,10 +30,12 @@ services:
       - "8080:8080"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
+      # A imagem python:slim não tem curl: o teste usa o próprio Python
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
       retries: 3
+      start_period: 5s
 
   auditoria-service:
     build:
