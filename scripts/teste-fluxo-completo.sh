@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-API_URL="http://localhost:8080"
+API_URL="${API_URL:-http://localhost:8080}"
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Teste Fluxo Completo SPB${NC}"
