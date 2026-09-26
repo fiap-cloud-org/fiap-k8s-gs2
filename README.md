@@ -55,19 +55,17 @@ O livro-razão é um arquivo (`instrucoes.log`) em um **volume compartilhado**: 
 | `09` a `11` | ServiceAccount, Role e RoleBinding | `get/list/watch` em pods e logs, `get/list` em configmaps e PVCs, só `get` em secrets; nada de criar ou apagar |
 | `exemplos/pod-inseguro.yaml` | Pod | Root, privilegiado e com hostPath: prova que o namespace recusa |
 
-### Correções feitas na revisão
+### Decisões técnicas
 
-| Problema encontrado nos testes | Correção |
-|---|---|
-| Healthcheck do compose usava `curl`, que não existe na imagem `python:slim`: container sempre `unhealthy` | Healthcheck com Python |
-| Auditoria no compose rodava em modo `once` com `restart: unless-stopped`: reiniciava sem parar | Modo `continuous` no compose |
-| Deployments e CronJob usavam `hostPath` e ignoravam o PVC criado | Todos montam o `unifiapay-logs-pvc` |
-| `deploy-k8s.sh` esperava o PVC ficar `Bound` antes dos Pods; no kind (`WaitForFirstConsumer`) o deploy travava | Espera depois dos Deployments |
-| API e auditoria mexiam no livro-razão ao mesmo tempo: um PIX gravado durante a liquidação podia sumir | Trava de arquivo (`flock`) nas duas pontas |
-| PIX pendentes não contavam na reserva: vários PIX seguidos passavam do saldo | A validação desconta o valor comprometido |
-| Scripts de teste com ping/curl dentro dos containers, campo de saldo errado e `docker compose run` com IP fixo em conflito | Scripts corrigidos e retornando erro quando algo falha |
-| `requests 2.31` com CVEs e dependências sem uso | Flask 3.1.3; `requests` e `python-dotenv` removidos |
-| Chave PIX versionada, senha fixa do Rancher na documentação e usuário do Docker Hub fixo | `.env.example`, `pix.key.example`, Secret criado no deploy, `RANCHER_BOOTSTRAP_PASSWORD` e `DOCKERHUB_USER` por variável |
+| Ponto | Como funciona | Por quê |
+|---|---|---|
+| Concorrência no livro-razão | API e auditoria usam uma trava de arquivo (`flock`): compartilhada para ler, exclusiva para liquidar | Sem ela, um PIX gravado durante a liquidação podia se perder, e duas réplicas da API podiam aprovar juntas mais do que a reserva |
+| Reserva comprometida | A validação soma o que já foi liquidado **e** o que está pendente | Vários PIX seguidos não passam do saldo antes de a liquidação rodar |
+| Volume do livro-razão | Deployments e CronJob montam o mesmo PVC `unifiapay-logs-pvc` | Todos os Pods enxergam o mesmo arquivo, em qualquer nó |
+| Segredos | `pix.key` e `.env` gerados por `preparar-ambiente.sh`; o Secret é criado no deploy com `kubectl create secret` | Nenhuma chave ou senha fica no repositório (o `03-secret.example.yaml` é só referência) |
+| Rancher e Docker Hub | `RANCHER_BOOTSTRAP_PASSWORD` e `DOCKERHUB_USER` por variável | A senha e a conta ficam fora do código e da documentação |
+| Healthchecks | Probes e healthcheck do compose feitos em Python | A imagem `python:slim` não tem `curl` |
+| Dependências | Flask 3.1.3, sem bibliotecas que não são usadas | Imagem menor e sem CVEs críticas no Trivy |
 
 ## Tecnologias utilizadas
 
@@ -145,7 +143,7 @@ Para apagar: `kind delete cluster --name unifiapay`.
 | 3. Kubernetes | `./scripts/teste-k8s.sh` (com `EVIDENCIAS=1` grava as saídas) | Mesmo livro-razão nos Pods da API, Job do CronJob liquidando, saldo e escala para 3 réplicas |
 | 4. Segurança | `./scripts/testar-seguranca.sh` | Pod inseguro recusado pelo Pod Security, securityContext aplicado e `auth can-i` da ServiceAccount |
 
-As saídas de uma execução real, feita em setembro de 2026 na revisão do projeto, estão em [`evidencias/`](evidencias). Não fazem parte delas: o `docker push` (depende de conta no Docker Hub), o `kubectl top` (o kind não traz o metrics-server) e as telas do Rancher (o guia não foi reexecutado na revisão).
+As saídas de uma execução real de cada etapa estão em [`evidencias/`](evidencias). Não fazem parte delas o `docker push` (depende de conta no Docker Hub), o `kubectl top` (o kind não traz o metrics-server) e as telas do Rancher, que seguem o guia em [docs/RANCHER.md](docs/RANCHER.md).
 
 ## Autor
 
