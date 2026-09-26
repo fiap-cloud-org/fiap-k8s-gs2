@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    name: Testes unitários (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      - name: api-pagamentos
+        working-directory: api-pagamentos
+        run: python -m pytest -q
+      - name: auditoria-service
+        working-directory: auditoria-service
+        run: python -m pytest -q
+
+  manifestos:
+    name: Manifestos (kubeconform)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz \
+            | tar -xz -C /usr/local/bin kubeconform
+      - run: kubeconform -strict -summary k8s/
+
+  compose:
+    name: Docker Compose (fluxo PIX)
+    runs-on: ubuntu-latest
+    needs: testes
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./scripts/preparar-ambiente.sh
+      - name: Subir a stack
+        working-directory: docker
+        run: docker compose up -d --build --wait
+      - run: ./scripts/simular-pix.sh
+      - run: ./scripts/teste-fluxo-completo.sh
+      - name: Logs em caso de falha
+        if: failure()
+        working-directory: docker
+        run: docker compose logs
+      - name: Derrubar
+        if: always()
+        working-directory: docker
+        run: docker compose down -v
+
+  kind:
+    name: Kubernetes no kind
+    runs-on: ubuntu-latest
+    needs: [testes, manifestos]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: helm/kind-action@v1
+        with:
+          cluster_name: unifiapay
+      - name: Build e carga das imagens no kind
+        run: KIND_CLUSTER=unifiapay ./scripts/build-images.sh
+      - run: ./scripts/deploy-k8s.sh
+      - run: ./scripts/teste-k8s.sh
+      - run: ./scripts/testar-seguranca.sh
+      - name: Estado do namespace em caso de falha
+        if: failure()
+        run: |
+          kubectl -n unifiapay get all,pvc,events
+          kubectl -n unifiapay logs -l app=api-pagamentos --tail=100

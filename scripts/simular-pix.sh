@@ -15,6 +15,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 API_URL="${API_URL:-http://localhost:8080}"
+FALHAS=0
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Simulação de Transações PIX${NC}"
@@ -30,6 +31,7 @@ if echo "$HEALTH" | jq -e '.status == "healthy"' > /dev/null 2>&1; then
     echo -e "${GREEN}✓ API está saudável${NC}"
 else
     echo -e "${RED}✗ API com problemas${NC}"
+    FALHAS=$((FALHAS + 1))
 fi
 echo ""
 
@@ -55,6 +57,7 @@ if echo "$PIX1" | jq -e '.status == "AGUARDANDO_LIQUIDACAO"' > /dev/null 2>&1; t
     echo -e "${GREEN}✓ PIX aprovado e registrado${NC}"
 else
     echo -e "${RED}✗ PIX rejeitado${NC}"
+    FALHAS=$((FALHAS + 1))
 fi
 echo ""
 
@@ -72,6 +75,7 @@ if echo "$PIX2" | jq -e '.status == "AGUARDANDO_LIQUIDACAO"' > /dev/null 2>&1; t
     echo -e "${GREEN}✓ PIX aprovado e registrado${NC}"
 else
     echo -e "${RED}✗ PIX rejeitado${NC}"
+    FALHAS=$((FALHAS + 1))
 fi
 echo ""
 
@@ -89,6 +93,7 @@ if echo "$PIX_INVALID" | jq -e '.status == "REJEITADO"' > /dev/null 2>&1; then
     echo -e "${GREEN}✓ PIX rejeitado corretamente (saldo insuficiente)${NC}"
 else
     echo -e "${RED}✗ PIX deveria ter sido rejeitado${NC}"
+    FALHAS=$((FALHAS + 1))
 fi
 echo ""
 
@@ -125,3 +130,8 @@ echo "  • PIX rejeitados: 1"
 echo "  • Volume compartilhado: Funcionando"
 echo ""
 echo -e "${BLUE}Próximo passo: Execute o serviço de auditoria para liquidar as transações${NC}"
+
+if [ "$FALHAS" -gt 0 ]; then
+    echo -e "${RED}✗ ${FALHAS} verificação(ões) falharam${NC}"
+    exit 1
+fi
