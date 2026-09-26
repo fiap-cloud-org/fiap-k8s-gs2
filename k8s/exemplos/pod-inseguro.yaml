@@ -1,0 +1,24 @@
+# Pod propositalmente inseguro para provar o bloqueio do namespace unifiapay.
+# Não faz parte do deploy. Teste com:
+#   kubectl apply -f k8s/exemplos/pod-inseguro.yaml
+# Resultado esperado: "Error from server (Forbidden): ... violates PodSecurity "restricted:latest""
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-inseguro
+  namespace: unifiapay
+spec:
+  containers:
+  - name: root
+    image: api-pagamentos:v1.556336
+    securityContext:
+      runAsUser: 0
+      privileged: true
+      allowPrivilegeEscalation: true
+    volumeMounts:
+    - name: host
+      mountPath: /host
+  volumes:
+  - name: host
+    hostPath:
+      path: /

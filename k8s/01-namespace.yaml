@@ -6,3 +6,8 @@ metadata:
     name: unifiapay
     project: unifiapay-spb
     environment: production
+    # Pod Security Admission: o namespace só aceita Pods no perfil "restricted"
+    # (sem root, sem escalada de privilégio, sem hostPath, capabilities removidas)
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: restricted
