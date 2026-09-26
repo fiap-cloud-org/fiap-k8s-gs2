@@ -62,10 +62,8 @@ echo -e "${GREEN}✓ RoleBinding criado${NC}"
 kubectl apply -f k8s/04-pvc.yaml
 echo -e "${GREEN}✓ PVC criado${NC}"
 
-# Aguardar PVC estar bound
-echo -e "${YELLOW}Aguardando PVC ficar bound...${NC}"
-kubectl wait --for=jsonpath='{.status.phase}'=Bound pvc/unifiapay-logs-pvc -n unifiapay --timeout=60s
-echo -e "${GREEN}✓ PVC está bound${NC}"
+# A StorageClass do kind (local-path) usa WaitForFirstConsumer: o PVC só fica
+# Bound quando o primeiro Pod que o monta é agendado. Esperar aqui travaria o deploy.
 
 kubectl apply -f k8s/05-deployment-api.yaml
 echo -e "${GREEN}✓ Deployment API criado${NC}"
@@ -87,8 +85,10 @@ echo ""
 
 # Aguardar pods estarem prontos
 echo -e "${BLUE}Aguardando pods ficarem prontos...${NC}"
-kubectl wait --for=condition=ready pod -l app=api-pagamentos -n unifiapay --timeout=120s
-echo -e "${GREEN}✓ Pods da API prontos${NC}"
+kubectl rollout status deployment/api-pagamentos -n unifiapay --timeout=180s
+kubectl rollout status deployment/auditoria-service -n unifiapay --timeout=180s
+kubectl wait --for=jsonpath='{.status.phase}'=Bound pvc/unifiapay-logs-pvc -n unifiapay --timeout=60s
+echo -e "${GREEN}✓ Pods prontos e PVC do livro-razão Bound${NC}"
 
 echo ""
 echo -e "${YELLOW}Status dos recursos:${NC}"
