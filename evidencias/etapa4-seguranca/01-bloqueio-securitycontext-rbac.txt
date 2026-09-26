@@ -1,0 +1,14 @@
+1) Tentativa de deploy inseguro (deve ser recusada)
+Error from server (Forbidden): error when creating "k8s/exemplos/pod-inseguro.yaml": pods "pod-inseguro" is forbidden: violates PodSecurity "restricted:latest": privileged (container "root" must not set securityContext.privileged=true), allowPrivilegeEscalation != false (container "root" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "root" must set securityContext.capabilities.drop=["ALL"]), restricted volume types (volume "host" uses restricted volume type "hostPath"), runAsNonRoot != true (pod or container "root" must set securityContext.runAsNonRoot=true), runAsUser=0 (container "root" must not set runAsUser=0), seccompProfile (pod or container "root" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+
+2) securityContext aplicado nos Pods da API
+{"fsGroup":1000,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}}
+{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":false,"runAsNonRoot":true,"runAsUser":1000}
+
+3) Permissões da ServiceAccount unifiapay-sa
+   can-i list pods              -> yes
+   can-i get configmaps         -> yes
+   can-i get secrets            -> yes
+   can-i delete pods            -> no
+   can-i create deployments     -> no
+   can-i list secrets           -> no

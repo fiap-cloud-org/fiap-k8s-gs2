@@ -1,0 +1,25 @@
+NAME                         SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob-fechamento-reserva   0 */6 * * *   <none>     False     0        <none>          57s
+
+NAME                           STATUS     COMPLETIONS   DURATION   AGE
+fechamento-manual-1790429610   Complete   1/1           4s         5s
+
+2026-09-26 13:33:33 - auditoria-service - INFO - === Iniciando Serviço de Auditoria e Liquidação ===
+2026-09-26 13:33:33 - file-monitor - INFO - Monitor inicializado. Arquivo: /var/logs/api/instrucoes.log, Posição: 719
+2026-09-26 13:33:33 - liquidacao-service - INFO - Serviço de Liquidação inicializado
+2026-09-26 13:33:33 - liquidacao-service - INFO - Monitorando: /var/logs/api/instrucoes.log
+2026-09-26 13:33:33 - auditoria-service - INFO - Modo execução única (CronJob)
+2026-09-26 13:33:33 - liquidacao-service - INFO - Total de instruções no livro-razão: 3
+2026-09-26 13:33:33 - liquidacao-service - INFO - Transação liquidada: PIX-20260926133328394754 - Valor: R$ 120.5 - Destino: cliente@exemplo.com
+2026-09-26 13:33:33 - liquidacao-service - INFO - Transação liquidada: PIX-20260926133328416490 - Valor: R$ 300.0 - Destino: cliente@exemplo.com
+2026-09-26 13:33:33 - liquidacao-service - INFO - Transação liquidada: PIX-20260926133328437999 - Valor: R$ 79.5 - Destino: cliente@exemplo.com
+2026-09-26 13:33:33 - liquidacao-service - INFO - Atualizando arquivo com 3 transações...
+2026-09-26 13:33:33 - liquidacao-service - INFO - Arquivo de instruções atualizado: 3 transações
+2026-09-26 13:33:33 - liquidacao-service - INFO - ✓ Arquivo atualizado com sucesso!
+2026-09-26 13:33:33 - auditoria-service - INFO - Liquidações processadas: 3
+2026-09-26 13:33:33 - auditoria-service - INFO - Erros encontrados: 0
+2026-09-26 13:33:33 - auditoria-service - INFO - Transações liquidadas:
+2026-09-26 13:33:33 - auditoria-service - INFO -   - PIX-20260926133328394754
+2026-09-26 13:33:33 - auditoria-service - INFO -   - PIX-20260926133328416490
+2026-09-26 13:33:33 - auditoria-service - INFO -   - PIX-20260926133328437999
+2026-09-26 13:33:33 - auditoria-service - INFO - === Serviço de Auditoria Finalizado ===

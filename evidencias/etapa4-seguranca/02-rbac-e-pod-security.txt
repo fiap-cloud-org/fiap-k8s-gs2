@@ -1,0 +1,25 @@
+Name:         unifiapay-role
+Labels:       app=unifiapay
+Annotations:  <none>
+PolicyRule:
+  Resources               Non-Resource URLs  Resource Names  Verbs
+  ---------               -----------------  --------------  -----
+  pods/log                []                 []              [get list watch]
+  pods                    []                 []              [get list watch]
+  configmaps              []                 []              [get list]
+  persistentvolumeclaims  []                 []              [get list]
+  secrets                 []                 []              [get]
+
+Name:         unifiapay-rolebinding
+Labels:       app=unifiapay
+Annotations:  <none>
+Role:
+  Kind:  Role
+  Name:  unifiapay-role
+Subjects:
+  Kind            Name          Namespace
+  ----            ----          ---------
+  ServiceAccount  unifiapay-sa  unifiapay
+
+NAME        STATUS   AGE   LABELS
+unifiapay   Active   85s   environment=production,kubernetes.io/metadata.name=unifiapay,name=unifiapay,pod-security.kubernetes.io/enforce-version=latest,pod-security.kubernetes.io/enforce=restricted,pod-security.kubernetes.io/warn=restricted,project=unifiapay-spb
