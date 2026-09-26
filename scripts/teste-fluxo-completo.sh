@@ -83,4 +83,5 @@ if [ "$SALDO_DEPOIS" != "$SALDO_INICIAL" ]; then
     echo -e "${GREEN}✓ SUCESSO: Saldo foi atualizado corretamente!${NC}"
 else
     echo -e "${RED}✗ ERRO: Saldo não foi atualizado${NC}"
+    exit 1
 fi
