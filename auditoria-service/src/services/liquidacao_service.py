@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 from src.utils.file_monitor import FileMonitor
 from src.utils.logger import setup_logger
+from src.utils.file_lock import trava_livro
 
 logger = setup_logger('liquidacao-service')
 
@@ -26,6 +27,14 @@ class LiquidacaoService:
         logger.info(f"Monitorando: {self.instrucoes_file}")
     
     def processar_liquidacoes(self):
+        """
+        Liquida as pendências segurando a trava exclusiva do livro-razão
+        durante toda a leitura e reescrita, para nenhum PIX novo se perder.
+        """
+        with trava_livro(self.instrucoes_file):
+            return self._processar_liquidacoes()
+
+    def _processar_liquidacoes(self):
         """
         Processa todas as transações pendentes de liquidação
         
