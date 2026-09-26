@@ -1,0 +1,50 @@
+version: '3.8'
+
+networks:
+  unifiap_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24
+          gateway: 172.25.0.1
+
+volumes:
+  shared_logs:
+    driver: local
+
+services:
+  api-pagamentos:
+    build:
+      context: ../api-pagamentos
+      dockerfile: Dockerfile
+    container_name: api-pagamentos
+    env_file:
+      - .env
+    networks:
+      unifiap_net:
+        ipv4_address: 172.25.0.10
+    volumes:
+      - shared_logs:/var/logs/api
+      - ./pix.key:/app/pix.key:ro
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  auditoria-service:
+    build:
+      context: ../auditoria-service
+      dockerfile: Dockerfile
+    container_name: auditoria-service
+    networks:
+      unifiap_net:
+        ipv4_address: 172.25.0.20
+    volumes:
+      - shared_logs:/var/logs/api
+    restart: unless-stopped
+    depends_on:
+      - api-pagamentos
