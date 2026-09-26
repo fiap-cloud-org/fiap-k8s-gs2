@@ -78,9 +78,11 @@ def processar_pix():
 def consultar_reserva():
     """Consulta o saldo da reserva bancária"""
     try:
-        saldo = reserva_service.get_saldo_reserva()
+        resumo = reserva_service.get_resumo_reserva()
         return jsonify({
-            'reserva_bancaria_saldo': saldo,
+            'reserva_bancaria_saldo': resumo['saldo'],
+            'reserva_comprometida': resumo['comprometido'],
+            'reserva_disponivel_para_pix': resumo['disponivel'],
             'moeda': 'BRL'
         }), 200
     except Exception as e:
